@@ -50,6 +50,15 @@ Normalise the URL to its origin before anything else. Accept
 `brand.com`, `www.brand.com`, `brand.myshopify.com`, and any deep link; work
 from the origin.
 
+**Then follow the redirect, because the two names do different jobs.** A
+`*.myshopify.com` URL usually 301s to the merchant's primary domain
+(`x-redirect-reason: primary_domain_redirection`). Analyse the **primary domain**
+— it serves the live theme, the real photography and the Joy config blob — but
+keep the `myshopify` handle, since the CLI, the theme list and the dev-theme push
+all key off that and reject the custom domain. Curl the origin with `-I` first
+and record both; assuming they are one name means analysing the wrong storefront
+or authenticating against a shop that does not resolve.
+
 **Then open the store, before doing anything else with it:**
 
 ```bash
@@ -78,7 +87,11 @@ cheap to learn now and expensive to learn after a build.
   `npx @framer/agent@latest setup`, let it finish, then invoke the `framer`
   skill. Do not load the framer skill before that command completes.
 - **The `impeccable` skill is available** for the direction and the finish
-  review. Check the project `.claude/skills` and the user's `~/.claude/skills`.
+  review. It usually ships as a **plugin**, not a skill, so `Skill(impeccable)`
+  fails and `~/.claude/skills` looks empty. Check
+  `~/.claude/plugins/cache/impeccable/*/skills/impeccable/` and read `SKILL.md`
+  plus `reference/<command>.md` directly with Read.
+  -> `reference/design-direction.md`
 - **Shopify CLI is authenticated against this shop.** Prove it with
   `shopify theme open --store <store>.myshopify.com` at the start, not at push
   time — a login can succeed on a partner account that has no access to this

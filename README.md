@@ -8,6 +8,21 @@ It is for the Avada Joy loyalty app. It reads the Joy monorepo for the real SDK
 contract rather than guessing at method names, and it refuses to redraw the
 parts of Joy that a merchant cannot actually change.
 
+## Built with this skill
+
+Two merchants, two loyalty pages, no shared layout. Both previews are the design
+proof: they mirror what actually shipped as Liquid on the merchant's own theme.
+
+| Merchant | What they sell | Design proof |
+|---|---|---|
+| [oneupballoons.ca](https://oneupballoons.ca) | Balloons and party installations, Canada | **[Loyalty page](https://social-guest-117624.framer.app)** · [Widget V4](https://social-guest-117624.framer.app/widget) |
+| [chiclara.com](https://chiclara.com) | East Asian designer fashion — women's clothing, bags, shoes | **[Loyalty page](https://attractive-emojis-099797.framer.app)** |
+
+The One Up Party page is the worked example throughout this README: a display
+serif carrying one phrase per heading, the merchant's own photography, their
+reward names leading every card, and a tier ladder that shows the
+invitation-only tier rather than hiding it.
+
 ---
 
 ## What it produces

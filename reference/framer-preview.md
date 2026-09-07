@@ -61,6 +61,74 @@ so it must be honest about layout, hierarchy, type, colour and rhythm.
 Follow the em-dash ban here too: no U+2014 or U+2013 as a separator anywhere
 visible. It carries into the Liquid, and the downstream skill enforces it.
 
+## Four DSL traps that cost a rebuild each
+
+Learned the hard way; all four apply/parse cleanly enough to look fine and then
+destroy work.
+
+**A product photo lives in `fill`.** Setting `fill` on an image frame to add a
+backdrop tint silently replaces the photograph with a flat colour, and the
+canvas still renders, so the loss is invisible until the next screenshot. To
+inset a stamp from the image edge, set `padding` on the image frame; leave
+`fill` alone. Keep the URL list in `state` so a restore is one command.
+
+**`gap` is ignored when `stackDistribution` is `space-*`.** Errors, does not
+warn. Use `stackDistribution="start"` plus `gap` whenever spacing must be
+guaranteed. It fires on exactly the layouts you want spaced: a headline row
+pushed apart, a field with a button on its end.
+
+**Inline `fontSize` is ignored on any node carrying a `textStylePreset`.** So
+per-breakpoint type scaling cannot be done on the node. Put it on the preset:
+`SET <preset> breakpoint.medium.fontSize="34px" breakpoint.small.fontSize="30px"`.
+One command rescales every heading at once, which is the point of the preset.
+
+**Breakpoint child ids are `<breakpointId><canonicalChildId>`, and the child id
+is the *canonical* one.** Concatenating the temporary id you used at creation
+produces "The target does not exist" for every command. After any create, record
+the `renamedIds` map, and when in doubt `serialize({id, depth:1})` the parent and
+read the real child ids before addressing a breakpoint variant.
+
+**A failed `applyChanges` still applies its prefix.** When one command in a batch
+errors (a bad image URL, an incompatible enum), the commands before it have
+already landed. Re-running the whole batch then creates a *second* set of
+children under the same parents, and the duplicates are invisible in a
+depth-1 serialize because the parent's child count looks normal at the item
+level. It renders as a grid that wraps into two rows with repeated content.
+After any errored batch, `serialize({id, depth:2})` the parent and read the
+child *names* per item before retrying; if you see `["Photo","Title","Price",
+"Photo","Title","Price"]`, delete one trio rather than rebuilding.
+
+**`overflow` values come in two incompatible groups.** `clip`/`visible` cannot
+be mixed with `auto`/`hidden` across `overflow`, `overflowX` and `overflowY` on
+the same node. A horizontal scroller is `overflow="auto"` plus
+`overflowY="hidden"`. Reaching for `overflowY="clip"` errors and the axis is
+silently ignored.
+
+## Reveal animations must not gate visibility
+
+Setting `appearEffect.enter.opacity="0"` with `trigger="onInView"` on every band
+ships a page that is **blank below the fold** in any headless render: the
+screenshot service, an SEO crawler's rendered view, a hidden tab. The content is
+in the HTML and indexes fine, which is exactly why this survives review; only a
+screenshot of the *published URL* catches it.
+
+Two consequences for this workflow:
+
+- Never opacity-gate a whole band. Either animate a property that has a visible
+  default, or drop the effect. A page that reads correctly with JavaScript
+  disabled is the floor.
+- **Screenshot the published URL, not just the canvas.** `readProject` with
+  `{"type":"screenshot","url":"<published url>"}` renders the real site. The
+  canvas screenshot draws every node regardless of its trigger state, so it
+  cannot show you this class of bug at all.
+
+## Verify each breakpoint by screenshot, not by inference
+
+`applyChanges` reporting clean does not mean the layout holds. A horizontal row
+that fits at 1200px overflows at 390px and clips its own text, and the only
+signal is the picture. Screenshot every breakpoint you author, and read the
+narrow one for clipped values and collapsed columns specifically.
+
 ## Publishing and handing over
 
 Publish, capture the URL, and send it with this framing, adapted to the user's

@@ -36,6 +36,32 @@ the order from the merchant's purchase rhythm, not from a template.
 | FAQ | terms are conditional or the price band is premium | none |
 | Closing CTA | always | none, auth gate only |
 
+**Walk the whole table before you compose, and say why each band is out.** The
+failure mode is not picking a wrong order, it is quietly shipping six bands when
+the vocabulary has ten, because the six that came to mind first felt like a
+complete page. "How it works", "Rewards carousel" and "FAQ" are the three that
+go missing, and each has an objective trigger:
+
+- **How it works** — build it whenever the merchant's *current* page has a
+  join/earn/spend explainer. They have already told you the mechanic needs
+  stating.
+- **Rewards carousel** — build it when the catalogue is broad and visual. A
+  footwear or apparel store with 100+ products always qualifies.
+- **FAQ** — build it when any reward carries a condition: an expiry window, a
+  minimum order, tier demotion. Read these off the config rather than guessing;
+  three conditions is already an FAQ.
+
+Also check the config for programs the band table does not name. Daily-visit and
+streak programs live in `settingsInteractWebsite`, not in `program.earning`, so
+a band list derived only from `earning` and `spending` will miss them entirely.
+
+**Include dormant programs by default, and say they are dormant.** A program
+that is configured with real values but has `status`/`isTurnOnProgram` false
+still gets its band, built to render in its empty state. It costs one band now
+and saves a rebuild when the merchant flips the toggle. What is not acceptable
+is silently dropping it: the merchant configured it, so they expect to see it.
+List every one in the report with the exact admin toggle.
+
 Order heuristics, applied to the analysis:
 
 - **Replenishment** (coffee, supplements, consumables): earn leads, tiers early,
@@ -121,8 +147,30 @@ not typography, it is scale. A page where the only difference between the hero
 and the seventh heading is `font-size` has no voice, and asking for "better
 typography" and getting a bigger ramp back means the brief was misread.
 
+**The brand-name eyebrow above the opening band.** `CHICLARA REWARDS` in 11px
+uppercase over the point balance. It survives the eyebrow check above because it
+names the brand rather than restating the heading, and it still fails: the
+customer is on the rewards page, reached from a header that already carries the
+wordmark. It announces what is already established. Delete it and let the
+balance open the page.
+
 The invocation is `impeccable`, and the file that carries these is its
 `reference/craft-floor.md`. Read it before editing UI, not as a review after.
+
+**Where `impeccable` actually lives.** It ships as a *plugin*, not as a skill in
+`~/.claude/skills`, so `Skill(impeccable)` and `Skill(impeccable:impeccable)`
+both fail with "Unknown skill" and the preconditions check above will wrongly
+report it missing. Read it off disk instead:
+
+```
+/Users/avada/.claude/plugins/cache/impeccable/<version>/skills/impeccable/SKILL.md
+/Users/avada/.claude/plugins/cache/impeccable/<version>/skills/impeccable/reference/<command>.md
+```
+
+`SKILL.md` carries the absolute bans and the AI-slop test; `reference/audit.md`
+carries the five scored dimensions. The audit references the bans by pointing at
+"the parent skill already loaded in this context", so reading `audit.md` alone
+gives you a scan with nothing to scan against. Read both.
 
 ## When a brief asks for ornament the theme does not have
 
