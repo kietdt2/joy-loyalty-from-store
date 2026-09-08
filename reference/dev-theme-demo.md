@@ -157,6 +157,29 @@ Until the page exists, the demo URL 404s. Check before sending: open the page
 URL in the browser and confirm it renders. Sending an untested URL is the most
 common way this stage fails.
 
+**The quieter failure is a page that exists but is not assigned, and it returns
+200.** If the merchant already runs a Joy loyalty page, the handle resolves,
+the theme is correct, and the page renders the *old* app-block layout from
+`templates/page.json` while your sections sit unused. Nothing errors. Detect it
+by grepping the fetched HTML for one of your own class names rather than by
+eyeballing a screenshot:
+
+```bash
+curl -sL "https://<domain>/pages/<handle>?preview_theme_id=<id>" \
+  | grep -c "joy-section--"      # 0 means the template is not assigned
+```
+
+Zero hits with a 200 status means the assignment step has not happened. Say that
+explicitly rather than reporting the demo as live, and do **not** reach for
+`templates/page.json` to force a render: it is the default template for every
+page on the theme, so the whole storefront becomes the loyalty page.
+
+Assignment needs Admin API `write_content`, which the Theme CLI does not hold,
+so ask for a token up front if the demo URL is part of the deliverable. Without
+one, the honest report is: sections pushed and schema-verified, visual pass
+pending assignment, plus the exact click path (Content > Pages > the page >
+Theme template > `joy-loyalty-page`).
+
 ## Verify before sending
 
 Open the page URL in a fresh tab and confirm:

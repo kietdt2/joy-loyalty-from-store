@@ -1,0 +1,283 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "joy-loyalty-from-store: Store URL to Shipped Loyalty Page",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "design",
+      "label": "Read + Design"
+    },
+    {
+      "id": "build",
+      "label": "Build + Ship"
+    }
+  ],
+  "phases": [
+    {
+      "id": "understand",
+      "label": "Understand",
+      "fromCol": 0,
+      "toCol": 2
+    },
+    {
+      "id": "agree",
+      "label": "Agree",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "deliver",
+      "label": "Deliver",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "open_store",
+    "analyse",
+    "extract",
+    "direction",
+    "framer",
+    "gate_one"
+  ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "open_store"
+    ],
+    "allowedTerminals": [
+      "report"
+    ],
+    "requiredPaths": [
+      {
+        "from": "open_store",
+        "to": "gate_one"
+      },
+      {
+        "from": "gate_one",
+        "to": "gate_two"
+      },
+      {
+        "from": "gate_two",
+        "to": "report"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "open_store",
+      "lane": "design",
+      "col": 0,
+      "type": "security",
+      "label": "0. Open the Store",
+      "sublabel": "from the store URL",
+      "tag": "proves auth",
+      "width": 140
+    },
+    {
+      "id": "analyse",
+      "lane": "design",
+      "col": 1,
+      "type": "frontend",
+      "label": "1. Analyse",
+      "sublabel": "palette, type, voice",
+      "width": 140
+    },
+    {
+      "id": "extract",
+      "lane": "design",
+      "col": 2,
+      "type": "database",
+      "label": "2. Extract Tokens",
+      "sublabel": "settings_data.json",
+      "width": 140
+    },
+    {
+      "id": "direction",
+      "lane": "design",
+      "col": 3,
+      "type": "backend",
+      "label": "3. Direction",
+      "sublabel": "uniqueness claim",
+      "width": 140,
+      "tag": "via impeccable"
+    },
+    {
+      "id": "framer",
+      "lane": "design",
+      "col": 4,
+      "type": "frontend",
+      "label": "4. Framer Preview",
+      "sublabel": "published link",
+      "width": 140,
+      "tag": "via framer"
+    },
+    {
+      "id": "gate_one",
+      "lane": "design",
+      "col": 5,
+      "type": "security",
+      "label": "GATE 1",
+      "sublabel": "user approves the design",
+      "tag": "hard stop",
+      "width": 140
+    },
+    {
+      "id": "handoff",
+      "lane": "build",
+      "col": 0,
+      "type": "messagebus",
+      "label": "5. Handoff",
+      "sublabel": "locked tokens + bands",
+      "width": 140
+    },
+    {
+      "id": "gate_two",
+      "lane": "build",
+      "col": 1,
+      "type": "security",
+      "label": "GATE 2",
+      "sublabel": "cut list agreed",
+      "tag": "in joy-loyalty-build",
+      "width": 140
+    },
+    {
+      "id": "sections",
+      "lane": "build",
+      "col": 2,
+      "type": "backend",
+      "label": "Author Sections",
+      "sublabel": "joy-*.liquid + SDK",
+      "width": 140
+    },
+    {
+      "id": "folder",
+      "lane": "build",
+      "col": 3,
+      "type": "database",
+      "label": "6. Delivery Folder",
+      "sublabel": "original untouched",
+      "width": 140
+    },
+    {
+      "id": "dev_theme",
+      "lane": "build",
+      "col": 4,
+      "type": "cloud",
+      "label": "7. Dev Theme",
+      "sublabel": "unpublished push",
+      "width": 140
+    },
+    {
+      "id": "verify",
+      "lane": "build",
+      "col": 5,
+      "type": "security",
+      "label": "8. Verify",
+      "sublabel": "needs page assigned",
+      "width": 140,
+      "tag": "admin API"
+    },
+    {
+      "id": "report",
+      "lane": "build",
+      "col": 5,
+      "type": "external",
+      "label": "9. Report",
+      "sublabel": "URLs + honest deltas",
+      "width": 140,
+      "yOffset": 88
+    }
+  ],
+  "edges": [
+    {
+      "from": "open_store",
+      "to": "analyse"
+    },
+    {
+      "from": "analyse",
+      "to": "extract"
+    },
+    {
+      "from": "extract",
+      "to": "direction",
+      "variant": "emphasis"
+    },
+    {
+      "from": "direction",
+      "to": "framer"
+    },
+    {
+      "from": "framer",
+      "to": "gate_one",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate_one",
+      "to": "handoff",
+      "label": "approved",
+      "variant": "security"
+    },
+    {
+      "from": "gate_one",
+      "to": "framer",
+      "label": "changes requested",
+      "variant": "dashed",
+      "role": "return"
+    },
+    {
+      "from": "handoff",
+      "to": "gate_two",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate_two",
+      "to": "sections",
+      "label": "cut list agreed",
+      "variant": "security"
+    },
+    {
+      "from": "sections",
+      "to": "folder",
+      "variant": "emphasis"
+    },
+    {
+      "from": "folder",
+      "to": "dev_theme"
+    },
+    {
+      "from": "dev_theme",
+      "to": "verify"
+    },
+    {
+      "from": "verify",
+      "to": "report",
+      "label": "passes",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "The Gates Are the Point",
+      "items": [
+        "Gate 1: no Liquid is written until the merchant opens the Framer link and says yes",
+        "Gate 2: the band cut list is agreed before any file lands in the theme",
+        "A rejected layout makes every section file wasted work, so iterate in Framer"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Where Builds Silently Stall",
+      "items": [
+        "A suffix template renders nowhere until a page is assigned to it in admin",
+        "Settings that fail schema validation are dropped, and the push still reports success",
+        "Verify by pulling back what landed, never by trusting the success message"
+      ]
+    }
+  ]
+}
