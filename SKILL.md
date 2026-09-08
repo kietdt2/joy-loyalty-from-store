@@ -22,6 +22,43 @@ half, approved design to shipped `joy-*.liquid`, belongs to
 | Exported theme folder | no | Analyse the live storefront only, and say the palette came from the rendered page rather than from `settings_data.json`. |
 | The shop's Joy data blob (`window.AVADA_JOY` or the admin export) | no, but ask for it | Without it you are guessing tier names, thresholds, programs and reward values. Ask early: it changes the design, not just the copy. |
 
+### Ask the intake questions before step 1, in one round
+
+**Resolve what you can yourself first, then ask only what is left.** Most of the
+answers are already public: fetch the storefront and read `window.AVADA_JOY`
+before asking anything, because a question whose answer is in the page wastes
+the user's turn and makes the rest of the round look careless.
+
+What you can settle alone, and must:
+
+- the **primary domain**, by following the redirect from the `.myshopify.com`
+  handle, and keeping both because the CLI needs the handle
+- whether the **Joy app is installed**, and its whole live configuration:
+  programmes, tiers, thresholds, `entryMethod`, referral terms, `canUseJoySDK`
+- whether a **loyalty page already exists**, from `shop.handleLoyaltyPage`
+- the **live theme name**, from `Shopify.theme`
+
+What you cannot know, and should ask in **one** round rather than discovering
+mid-build:
+
+| Ask | Why it cannot wait |
+|---|---|
+| **Which theme do I write into**, and confirm it is not the live one | Every later push targets it. Discovering the wrong target after authoring ten sections means redoing the delivery folder, and a wrong guess writes into a live storefront. |
+| **Is the page already assigned to a template**, or will you assign it | A suffix template renders nowhere until a page points at it, and that needs Admin API scope the Theme CLI does not hold. Without an answer the whole verification stage is blocked and the demo URL is not deliverable. |
+| **Programmes configured but switched off**: build them dormant, or omit them | Changes the band list, and therefore the direction contract and the Framer preview. Asking after gate 1 means re-approving. |
+| **Anything in Joy you are about to change** | Thresholds, tier names and reward values get designed into copy. A change after the build makes the page state numbers the customer cannot reconcile. |
+
+Put the findings in the same message as the questions, so the user is correcting
+a draft rather than answering from scratch. Name anything the config contradicts
+itself on, for example a tier description that says "Reach 500" while
+`targetPoint` is 250, and ask which is true rather than quietly picking one.
+
+Two questions are worth asking **only when the situation calls for it**, and
+they are cheap to check first: whether the CLI is authenticated against this
+shop, and whether the shop has a plan that returns real SDK data. Prove both
+rather than asking, then raise them only if they fail.
+-> `reference/dev-theme-demo.md`, `reference/joy-app-source.md`
+
 ## Scope: which surfaces are yours to design
 
 A "loyalty page" request often means four surfaces: the page, the widget, a
@@ -104,9 +141,14 @@ cheap to learn now and expensive to learn after a build.
 
 The gates are the point. Two of them, and you stop dead at each.
 
-0. **Open the store.** `shopify theme open --store <store>.myshopify.com`, as
-   above. If it fails, stop and resolve auth or the handle before going further:
-   everything downstream assumes you can reach this shop.
+0. **Open the store, read its config, then ask the intake questions.** Run
+   `shopify theme open --store <store>.myshopify.com`, follow the redirect to
+   the primary domain, and pull `window.AVADA_JOY` off the storefront. That
+   settles the programmes, tiers, thresholds, referral terms, plan flags, the
+   live theme name and whether a loyalty page already exists. Then ask the four
+   questions in **Inputs** above in a single round, with those findings
+   alongside them. If `theme open` fails, stop and resolve auth or the handle
+   first: everything downstream assumes you can reach this shop.
 
 1. **Analyse the store.** Read the storefront the way a brand designer would,
    not the way a scraper would. Products, positioning, price posture, theme
